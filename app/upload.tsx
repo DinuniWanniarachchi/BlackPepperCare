@@ -6,6 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  ImageBackground,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -109,6 +110,11 @@ export default function UploadScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ImageBackground
+        source={require('../assets/images/pepper 4.jpg')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>PEPPER DOCTOR</Text>
@@ -152,6 +158,7 @@ export default function UploadScreen() {
           </View>
         </View>
       </ScrollView>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -252,6 +259,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   diagnosisCard: {
     backgroundColor: colors.cardBackground,
