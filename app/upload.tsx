@@ -13,7 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 const colors = {
   primary: '#2D5016', // Dark green
-  lightGreen: '#6ec10eff', // Light green for buttons
+  lightGreen: '#53920cff', // Light green for buttons
   background: '#2D5016', // Dark green background
   white: '#FFFFFF',
   textPrimary: '#FFFFFF',
