@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,9 @@ import {
   SafeAreaView,
   ScrollView,
   ImageBackground,
+  Modal,
 } from 'react-native';
+import { useAppTheme } from './providers/ThemeProvider';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -43,6 +45,13 @@ const recentDiagnoses = [
 
 export default function UploadScreen() {
   const router = useRouter();
+  const theme = (() => {
+    try {
+      return useAppTheme();
+    } catch (e) {
+      return null;
+    }
+  })();
 
   const handleTakePhoto = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -104,8 +113,18 @@ export default function UploadScreen() {
   };
 
   const handleSettings = () => {
-    // Navigate to settings or show settings modal
-    alert('Settings coming soon!');
+    setSettingsVisible(true);
+  };
+
+  const [settingsVisible, setSettingsVisible] = useState(false);
+
+  const setThemeMode = (mode: 'system' | 'light' | 'dark') => {
+    try {
+      theme?.setMode(mode as any);
+    } catch (e) {
+      // provider not ready
+    }
+    setSettingsVisible(false);
   };
 
   return (
@@ -122,6 +141,30 @@ export default function UploadScreen() {
           <Text style={styles.settingsIcon}>⚙️</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Settings modal for theme selection */}
+      <Modal visible={settingsVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Theme</Text>
+            <TouchableOpacity style={styles.optionRow} onPress={() => setThemeMode('system')}>
+              <Text style={styles.optionText}>System</Text>
+              {theme?.mode === 'system' && <Text style={styles.optionSelected}>✓</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionRow} onPress={() => setThemeMode('light')}>
+              <Text style={styles.optionText}>Light</Text>
+              {theme?.mode === 'light' && <Text style={styles.optionSelected}>✓</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionRow} onPress={() => setThemeMode('dark')}>
+              <Text style={styles.optionText}>Dark</Text>
+              {theme?.mode === 'dark' && <Text style={styles.optionSelected}>✓</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setSettingsVisible(false)}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Main Scan Button - Large Circular */}
@@ -283,5 +326,50 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '86%',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 18,
+    alignItems: 'stretch',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  optionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 6,
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#222',
+  },
+  optionSelected: {
+    fontSize: 16,
+    color: '#2D5016',
+    fontWeight: '700',
+  },
+  closeButton: {
+    marginTop: 8,
+    alignSelf: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+  },
+  closeText: {
+    color: '#2D5016',
+    fontWeight: '700',
   },
 });
