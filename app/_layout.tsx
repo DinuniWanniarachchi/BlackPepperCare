@@ -1,5 +1,5 @@
 
-import { Stack } from 'expo-router';
+import { Stack, usePathname, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -13,6 +13,12 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+  const pathname = usePathname() || '/';
+  const segments = useSegments();
+  const allowed = ['/', '/upload', '/history', '/account'];
+  const showFooter =
+    allowed.some((p) => pathname === p || pathname.startsWith(p + '/')) && !segments.includes('preview');
+
   return (
     <AppThemeProvider>
       <SafeAreaProvider>
@@ -22,7 +28,7 @@ export default function RootLayout() {
             <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
           </Stack>
         </View>
-        <Footer />
+        {showFooter && <Footer />}
       </SafeAreaProvider>
       <StatusBar style="auto" />
     </AppThemeProvider>

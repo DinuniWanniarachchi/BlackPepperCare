@@ -1,15 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, Image, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getHistory, HistoryItem } from './utils/history';
 
 export default function HistoryScreen() {
   const insets = useSafeAreaInsets();
+  const [items, setItems] = useState<HistoryItem[] | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const data = await getHistory();
+      if (!mounted) return;
+      setItems(data);
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const inStorage = Array.isArray(items) && items.length > 0;
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: (insets?.bottom ?? 0) + 88 }}>
         <Text style={styles.title}>History</Text>
 
+        {inStorage &&
+          items!.map((it) => (
+            <View key={it.id} style={styles.card}>
+              {it.imageUri ? (
+                <Image source={{ uri: it.imageUri }} style={styles.image} resizeMode="cover" />
+              ) : (
+                <View style={[styles.image, { backgroundColor: '#eee', alignItems: 'center', justifyContent: 'center' }]}>
+                  <Text>No Image</Text>
+                </View>
+              )}
+              <View style={styles.cardBody}>
+                <Text style={styles.disease}>{it.diseaseName}</Text>
+                {it.date && <Text style={{ color: '#666', marginBottom: 6 }}>{new Date(it.date).toLocaleString()}</Text>}
+                <Text style={styles.solutionTitle}>{it.severity ? `Severity: ${it.severity}` : 'Result'}</Text>
+                <Text style={styles.solution}>{it.note ?? `Confidence: ${it.confidence ?? 'N/A'}`}</Text>
+              </View>
+            </View>
+          ))}
+
+        {/* Always show the three preset entries */}
         <View style={styles.card}>
           <Image source={require('../assets/images/pepper 5.jpg')} style={styles.image} resizeMode="cover" />
           <View style={styles.cardBody}>

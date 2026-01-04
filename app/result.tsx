@@ -10,6 +10,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useEffect } from 'react';
+import { addHistory } from './utils/history';
 
 const colors = {
   primary: '#2D5016',
@@ -29,6 +31,25 @@ export default function ResultScreen() {
     confidence: string;
     imageUri: string;
   }>();
+
+  useEffect(() => {
+    // Save to history when result is shown
+    if (diseaseName) {
+      (async () => {
+        try {
+          await addHistory({
+            diseaseName,
+            severity,
+            confidence,
+            imageUri,
+            note: `Confidence: ${confidence}`,
+          });
+        } catch (e) {
+          console.warn('Failed to save history', e);
+        }
+      })();
+    }
+  }, [diseaseName, severity, confidence, imageUri]);
 
   const getSeverityColor = (sev: string) => {
     switch (sev) {
