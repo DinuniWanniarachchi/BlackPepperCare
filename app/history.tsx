@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { getHistory, HistoryItem } from './utils/history';
+import { getHistory, HistoryItem, removeHistoryItem } from './utils/history';
 
 export default function HistoryScreen() {
   const insets = useSafeAreaInsets();
@@ -36,11 +36,31 @@ export default function HistoryScreen() {
                   <Text>No Image</Text>
                 </View>
               )}
-              <View style={styles.cardBody}>
-                <Text style={styles.disease}>{it.diseaseName}</Text>
-                {it.date && <Text style={{ color: '#666', marginBottom: 6 }}>{new Date(it.date).toLocaleString()}</Text>}
-                <Text style={styles.solutionTitle}>{it.severity ? `Severity: ${it.severity}` : 'Result'}</Text>
-                <Text style={styles.solution}>{it.note ?? `Confidence: ${it.confidence ?? 'N/A'}`}</Text>
+              <View style={styles.cardBodyRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.disease}>{it.diseaseName}</Text>
+                  {it.date && <Text style={{ color: '#666', marginBottom: 6 }}>{new Date(it.date).toLocaleString()}</Text>}
+                  <Text style={styles.solutionTitle}>{it.severity ? `Severity: ${it.severity}` : 'Result'}</Text>
+                  <Text style={styles.solution}>{it.note ?? `Confidence: ${it.confidence ?? 'N/A'}`}</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.deleteBtn}
+                  onPress={() => {
+                    Alert.alert('Delete entry', 'Are you sure you want to delete this history entry?', [
+                      { text: 'Cancel', style: 'cancel' },
+                      {
+                        text: 'Delete',
+                        style: 'destructive',
+                        onPress: async () => {
+                          const ok = await removeHistoryItem(it.id);
+                          if (ok) setItems((prev) => (prev ? prev.filter((p) => p.id !== it.id) : prev));
+                        },
+                      },
+                    ]);
+                  }}
+                >
+                  <Text style={styles.deleteText}>Delete</Text>
+                </TouchableOpacity>
               </View>
             </View>
           ))}
@@ -90,7 +110,17 @@ const styles = StyleSheet.create({
   card: { backgroundColor: '#fff', borderRadius: 12, overflow: 'hidden', elevation: 3, marginBottom: 16 },
   image: { width: '100%', height: 200 },
   cardBody: { padding: 12 },
+  cardBodyRow: { padding: 12, flexDirection: 'row', alignItems: 'flex-start' },
   disease: { fontSize: 18, fontWeight: '700', color: '#2D5016', marginBottom: 8 },
   solutionTitle: { fontSize: 14, fontWeight: '700', marginBottom: 6 },
   solution: { fontSize: 14, color: '#333', lineHeight: 20 },
+  deleteBtn: {
+    marginLeft: 12,
+    alignSelf: 'flex-start',
+    backgroundColor: '#ffefef',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  deleteText: { color: '#b00020', fontWeight: '700' },
 });

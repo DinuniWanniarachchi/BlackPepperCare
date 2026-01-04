@@ -15,7 +15,7 @@ export const unstable_settings = {
 export default function RootLayout() {
   const pathname = usePathname() || '/';
   const segments = useSegments();
-  const allowed = ['/', '/upload', '/history', '/account'];
+  const allowed = ['/', '/upload', '/history', '/account', '/treatment'];
   const showFooter =
     allowed.some((p) => pathname === p || pathname.startsWith(p + '/')) && !segments.includes('preview');
 

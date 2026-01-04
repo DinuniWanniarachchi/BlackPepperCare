@@ -55,3 +55,15 @@ export async function clearHistory() {
     console.warn('clearHistory error', e);
   }
 }
+
+export async function removeHistoryItem(id: string) {
+  try {
+    const current = await getHistory();
+    const next = current.filter((i) => i.id !== id);
+    await saveHistory(next);
+    return true;
+  } catch (e) {
+    console.warn('removeHistoryItem error', e);
+    return false;
+  }
+}
