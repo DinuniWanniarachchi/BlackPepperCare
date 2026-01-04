@@ -21,11 +21,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',  // Center content vertically and horizontally
     alignItems: 'center',
   },
-  content: {
+  backgroundImage: {
     flex: 1,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 16,  // Reduced padding for better mobile experience
+    backgroundColor: colors.primary,
+  },
+  content: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 16,
   },
   logoContainer: {
     marginBottom: 20,
@@ -58,29 +66,48 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   startButton: {
-    backgroundColor: colors.white,
-    paddingVertical: 14,     // Adjusted padding for a more balanced button size
+    backgroundColor: colors.primary,
+    paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 8,
+    marginTop: 18,
     marginBottom: 24,
   },
   startButtonText: {
-    color: colors.primary,
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   description: {
-    fontSize: 12,           // Reduced font size for better readability
-    color: colors.textPrimary,
+    fontSize: 14,
+    lineHeight: 20,
+    color: colors.textSecondary,
     textAlign: 'center',
-    marginTop: 12,          // Added space above the description
-    marginHorizontal: 24,   // Added margin for better horizontal padding
+    marginTop: 14,
+    marginHorizontal: 24,
+  },
+  card: {
+    width: Math.min(width * 0.92, 820),
+    backgroundColor: colors.white,
+    borderRadius: 18,
+    paddingVertical: 36,
+    paddingHorizontal: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: height * 0.48,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
   },
   overlay: {
-    flex: 1,
-    backgroundColor: colors.overlayColor,  // Darker overlay for text visibility
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colors.overlayColor,
   },
 });
 

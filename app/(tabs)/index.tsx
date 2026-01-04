@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, StatusBar, Image } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, StatusBar, Image, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import styles from './styles';  // Import the styles here
 
@@ -10,9 +10,15 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       
-      {/* Set the green background color */}
-      <View style={styles.background}>
-        <View style={styles.overlay}>
+      {/* Background image with overlay and a centered white card */}
+      <ImageBackground
+        source={require('../../assets/images/pepper 4.jpg')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay} />
+
+        <View style={styles.card}>
           <View style={styles.content}>
             {/* App Title */}
             <View style={styles.logoContainer}>
@@ -26,6 +32,11 @@ export default function HomeScreen() {
               <Text style={styles.appTitle}>Black Pepper Care</Text>
             </View>
 
+            {/* Description inside white card */}
+            <Text style={styles.description}>
+              Quickly identify black pepper leaf diseases with just a photo! Simply upload or take a picture of the leaf, and our app will analyze the image to diagnose the disease with high accuracy. Get immediate results along with useful treatment tips and solutions to help you protect your crops and ensure a healthy harvest.
+            </Text>
+
             {/* Button to Navigate to Upload Page */}
             <TouchableOpacity
               style={styles.startButton}
@@ -33,14 +44,9 @@ export default function HomeScreen() {
             >
               <Text style={styles.startButtonText}>Get Started</Text>
             </TouchableOpacity>
-
-            {/* Description */}
-            <Text style={styles.description}>
-              Identify black pepper diseases using a photo of the leaf.
-            </Text>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
