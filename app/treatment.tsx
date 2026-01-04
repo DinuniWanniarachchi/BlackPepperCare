@@ -45,31 +45,74 @@ export default function TreatmentScreen() {
       </View>
 
       <ScrollView style={styles.content}>
-        {/* Recommended Treatment */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recommended Treatment:</Text>
-          <View style={styles.listItem}>
-            <Text style={styles.bullet}>•</Text>
-            <Text style={styles.listText}>Use Copper Fungicide</Text>
-          </View>
-          <View style={styles.listItem}>
-            <Text style={styles.bullet}>•</Text>
-            <Text style={styles.listText}>Apply every 7 days</Text>
-          </View>
-        </View>
+        {/* Disease-specific Recommendations */}
+        {diseaseName === 'Slow wilt' && (
+          <>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Recommended Treatment for Slow wilt:</Text>
+              <View style={styles.listItem}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.listText}>To avoid nematodes add 03g of carbofuran into pots.</Text>
+              </View>
+              <View style={styles.listItem}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.listText}>Alternatively add 30g of carbofuran into the planting hole.</Text>
+              </View>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Preventive Measures:</Text>
+              <View style={styles.listItem}>
+                <Text style={styles.checkmark}>✓</Text>
+                <Text style={styles.listText}>Use certified disease-free planting material.</Text>
+              </View>
+              <View style={styles.listItem}>
+                <Text style={styles.checkmark}>✓</Text>
+                <Text style={styles.listText}>Monitor soil health and practice crop rotation.</Text>
+              </View>
+            </View>
+          </>
+        )}
 
-        {/* Preventive Measures */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preventive Measures:</Text>
-          <View style={styles.listItem}>
-            <Text style={styles.checkmark}>✓</Text>
-            <Text style={styles.listText}>Remove infected leaves</Text>
+        {diseaseName === 'Leaf blight' && (
+          <>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Recommended Treatment for Leaf blight:</Text>
+              <View style={styles.listItem}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.listText}>Apply appropriate fungicide such as copper-based products.</Text>
+              </View>
+              <View style={styles.listItem}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.listText}>Repeat applications as per product label.</Text>
+              </View>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Preventive Measures:</Text>
+              <View style={styles.listItem}>
+                <Text style={styles.checkmark}>✓</Text>
+                <Text style={styles.listText}>Plant resistant varieties when available.</Text>
+              </View>
+              <View style={styles.listItem}>
+                <Text style={styles.checkmark}>✓</Text>
+                <Text style={styles.listText}>Maintain good field sanitation and avoid prolonged wetting.</Text>
+              </View>
+            </View>
+          </>
+        )}
+
+        {diseaseName === 'Healthy' && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Plant Status: Healthy</Text>
+            <View style={styles.listItem}>
+              <Text style={styles.checkmark}>✓</Text>
+              <Text style={styles.listText}>Maintain good cultural practices: proper nutrition and watering.</Text>
+            </View>
+            <View style={styles.listItem}>
+              <Text style={styles.checkmark}>✓</Text>
+              <Text style={styles.listText}>Monitor regularly for early signs of disease.</Text>
+            </View>
           </View>
-          <View style={styles.listItem}>
-            <Text style={styles.checkmark}>✓</Text>
-            <Text style={styles.listText}>Avoid excess watering</Text>
-          </View>
-        </View>
+        )}
 
         {/* Action Buttons */}
         <View style={styles.buttonContainer}>

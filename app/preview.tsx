@@ -31,13 +31,21 @@ export default function PreviewScreen() {
     // Simulate API call for disease detection
     setTimeout(() => {
       setAnalyzing(false);
+      // Limit possible results to Slow wilt, Leaf blight, or Healthy
+      const choices = [
+        { diseaseName: 'Slow wilt', severity: 'Moderate', confidence: '82' },
+        { diseaseName: 'Leaf blight', severity: 'Moderate', confidence: '88' },
+        { diseaseName: 'Healthy', severity: 'None', confidence: '98' },
+      ];
+      // For now pick the highest-confidence mock (or choose deterministically/randomly)
+      const result = choices[Math.floor(Math.random() * choices.length)];
       router.push({
         pathname: '/result',
         params: {
           imageUri,
-          diseaseName: 'Leaf Spot',
-          severity: 'Moderate',
-          confidence: '92',
+          diseaseName: result.diseaseName,
+          severity: result.severity,
+          confidence: result.confidence,
         },
       });
     }, 2000);

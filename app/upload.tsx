@@ -25,23 +25,11 @@ const colors = {
   cardBackground: '#F5F5F5',
 };
 
-// Mock data for recent diagnoses (you can replace this with actual data from storage)
+// Mock data for recent diagnoses (replaceable with storage-backed data)
 const recentDiagnoses = [
-  {
-    id: '1',
-    diseaseName: 'Fom fed Start NRI)',
-    confidence: '80%',
-  },
-  {
-    id: '2',
-    diseaseName: 'Prer led Back SOK)',
-    confidence: '04%',
-  },
-  {
-    id: '3',
-    diseaseName: 'Pella Donsoce',
-    confidence: '92%',
-  },
+  { id: 'r1', diseaseName: 'Leaf blight', confidence: '88%' },
+  { id: 'r2', diseaseName: 'Slow wilt', confidence: '82%' },
+  { id: 'r3', diseaseName: 'Quick wilt', confidence: '76%' },
 ];
 
 export default function UploadScreen() {
