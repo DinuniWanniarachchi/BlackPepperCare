@@ -1,7 +1,5 @@
-// app/tabs/index.tsx
-
 import React from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, StatusBar, ImageBackground, Image } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, StatusBar, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import styles from './styles';  // Import the styles here
 
@@ -12,13 +10,8 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       
-      {/* Set the full background image */}
-      <ImageBackground 
-        source={require('../../assets/images/pepper 3.jpg')}  // Set your background image
-        style={styles.backgroundImage} 
-        imageStyle={styles.backgroundImageStyle}  // Apply any image-specific styles (e.g., resizing)
-      >
-        {/* Optional: Dark overlay to ensure text visibility */}
+      {/* Set the green background color */}
+      <View style={styles.background}>
         <View style={styles.overlay}>
           <View style={styles.content}>
             {/* App Title */}
@@ -47,7 +40,7 @@ export default function HomeScreen() {
             </Text>
           </View>
         </View>
-      </ImageBackground>
+      </View>
     </SafeAreaView>
   );
 }
