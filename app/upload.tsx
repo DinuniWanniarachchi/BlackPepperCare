@@ -10,6 +10,7 @@ import {
   Modal,
 } from 'react-native';
 import { useAppTheme } from './providers/ThemeProvider';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -45,6 +46,7 @@ const recentDiagnoses = [
 
 export default function UploadScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const theme = (() => {
     try {
       return useAppTheme();
@@ -166,7 +168,11 @@ export default function UploadScreen() {
         </View>
       </Modal>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={{ paddingBottom: (insets?.bottom ?? 0) + 88 }}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Main Scan Button - Large Circular */}
         <View style={styles.scanButtonContainer}>
           <TouchableOpacity style={styles.scanButton} onPress={handleTakePhoto}>
