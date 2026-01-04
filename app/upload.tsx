@@ -10,6 +10,7 @@ import {
   Modal,
 } from 'react-native';
 import { useAppTheme } from './providers/ThemeProvider';
+import { useTranslation, setStoredLang } from './i18n';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -42,6 +43,7 @@ export default function UploadScreen() {
       return null;
     }
   })();
+  const { t, lang, setLang } = useTranslation();
 
   const handleTakePhoto = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -136,19 +138,44 @@ export default function UploadScreen() {
       <Modal visible={settingsVisible} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Theme</Text>
+            <Text style={styles.modalTitle}>{t('settings') || 'Settings'}</Text>
+
+            <Text style={[styles.modalTitle, { marginTop: 8 }]}>{t('theme') || 'Theme'}</Text>
             <TouchableOpacity style={styles.optionRow} onPress={() => setThemeMode('system')}>
-              <Text style={styles.optionText}>System</Text>
+              <Text style={styles.optionText}>{t('system') || 'System'}</Text>
               {theme?.mode === 'system' && <Text style={styles.optionSelected}>✓</Text>}
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionRow} onPress={() => setThemeMode('light')}>
-              <Text style={styles.optionText}>Light</Text>
+              <Text style={styles.optionText}>{t('light') || 'Light'}</Text>
               {theme?.mode === 'light' && <Text style={styles.optionSelected}>✓</Text>}
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionRow} onPress={() => setThemeMode('dark')}>
-              <Text style={styles.optionText}>Dark</Text>
+              <Text style={styles.optionText}>{t('dark') || 'Dark'}</Text>
               {theme?.mode === 'dark' && <Text style={styles.optionSelected}>✓</Text>}
             </TouchableOpacity>
+
+            <Text style={[styles.modalTitle, { marginTop: 8 }]}>{t('language') || 'Language'}</Text>
+            <TouchableOpacity
+              style={styles.optionRow}
+              onPress={async () => {
+                setLang('en');
+                await setStoredLang('en');
+              }}
+            >
+              <Text style={styles.optionText}>English</Text>
+              {lang === 'en' && <Text style={styles.optionSelected}>✓</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionRow}
+              onPress={async () => {
+                setLang('si');
+                await setStoredLang('si');
+              }}
+            >
+              <Text style={styles.optionText}>සිංහල</Text>
+              {lang === 'si' && <Text style={styles.optionSelected}>✓</Text>}
+            </TouchableOpacity>
+
             <TouchableOpacity style={styles.closeButton} onPress={() => setSettingsVisible(false)}>
               <Text style={styles.closeText}>Close</Text>
             </TouchableOpacity>

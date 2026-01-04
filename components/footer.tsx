@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from '../app/i18n';
 import { useRouter, usePathname } from 'expo-router';
 import { useAppTheme } from '../app/providers/ThemeProvider';
 
@@ -41,31 +42,31 @@ export default function Footer() {
       ]}
     >
       <TouchableOpacity style={styles.item} onPress={() => router.push('/')}>
-        <View style={[styles.rect, { backgroundColor: isActive('/') ? (theme?.effective === 'dark' ? 'rgba(166,240,166,0.12)' : 'rgba(45,80,22,0.08)') : (theme?.effective === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)') }]}>
+        <View style={[styles.rect, { backgroundColor: isActive('/') ? (theme?.effective === 'dark' ? 'rgba(166,240,166,0.12)' : 'rgba(45,80,22,0.08)') : (theme?.effective === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)') }]}> 
           <Text style={[styles.icon, { color: isActive('/') ? activeColor : inactiveColor }]}>🏠</Text>
         </View>
-        <Text style={[styles.label, { color: isActive('/') ? activeColor : inactiveColor }]}>Home</Text>
+        <Text style={[styles.label, { color: isActive('/') ? activeColor : inactiveColor }]}>{useTranslation().t('home') || 'Home'}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.item} onPress={() => router.push('/upload')}>
         <View style={[styles.rect, { backgroundColor: isActive('/upload') ? (theme?.effective === 'dark' ? 'rgba(166,240,166,0.12)' : 'rgba(45,80,22,0.08)') : (theme?.effective === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)') }]}>
           <Text style={[styles.icon, { color: isActive('/upload') ? activeColor : inactiveColor }]}>📤</Text>
         </View>
-        <Text style={[styles.label, { color: isActive('/upload') ? activeColor : inactiveColor }]}>Upload</Text>
+        <Text style={[styles.label, { color: isActive('/upload') ? activeColor : inactiveColor }]}>{useTranslation().t('upload') || 'Upload'}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.item} onPress={() => router.push('/history')}>
         <View style={[styles.rect, { backgroundColor: isActive('/history') ? (theme?.effective === 'dark' ? 'rgba(166,240,166,0.12)' : 'rgba(45,80,22,0.08)') : (theme?.effective === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)') }]}>
           <Text style={[styles.icon, { color: isActive('/history') ? activeColor : inactiveColor }]}>📜</Text>
         </View>
-        <Text style={[styles.label, { color: isActive('/history') ? activeColor : inactiveColor }]}>History</Text>
+        <Text style={[styles.label, { color: isActive('/history') ? activeColor : inactiveColor }]}>{useTranslation().t('history') || 'History'}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.item} onPress={() => router.push('/account')}>
         <View style={[styles.rect, { backgroundColor: isActive('/account') ? (theme?.effective === 'dark' ? 'rgba(166,240,166,0.12)' : 'rgba(45,80,22,0.08)') : (theme?.effective === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)') }]}>
           <Text style={[styles.icon, { color: isActive('/account') ? activeColor : inactiveColor }]}>👤</Text>
         </View>
-        <Text style={[styles.label, { color: isActive('/account') ? activeColor : inactiveColor }]}>Account</Text>
+        <Text style={[styles.label, { color: isActive('/account') ? activeColor : inactiveColor }]}>{useTranslation().t('account') || 'Account'}</Text>
       </TouchableOpacity>
     </View>
   );
