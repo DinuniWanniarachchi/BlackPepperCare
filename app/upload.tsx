@@ -67,25 +67,38 @@ export default function UploadScreen() {
   };
 
   const handleChooseFromGallery = async () => {
+    // Request gallery permissions
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
+
     if (status !== 'granted') {
       alert('Sorry, we need gallery permissions to select photos!');
       return;
     }
 
+    // Open the image picker with cropping enabled
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 0.8,
-      allowsEditing: true,
+      allowsEditing: true, // Allow cropping option
       aspect: [4, 3],
     });
 
-    if (!result.canceled && result.assets[0].uri) {
+    // Ensure we have a valid result
+    if (result.canceled) {
+      alert('You didn’t select an image!');
+      return;
+    }
+
+    if (result.assets && result.assets.length > 0) {
+      const selectedImageUri = result.assets[0].uri;
+
+      // Proceed to the preview screen with the selected image
       router.push({
         pathname: '/preview',
-        params: { imageUri: result.assets[0].uri },
+        params: { imageUri: selectedImageUri },
       });
+    } else {
+      alert('No image selected!');
     }
   };
 
