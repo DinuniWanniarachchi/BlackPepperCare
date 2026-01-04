@@ -6,14 +6,13 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 
 const colors = {
   primary: '#2D5016', // Dark green
-  lightGreen: '#8BC34A', // Light green for buttons
+  lightGreen: '#6ec10eff', // Light green for buttons
   background: '#2D5016', // Dark green background
   white: '#FFFFFF',
   textPrimary: '#FFFFFF',
@@ -26,19 +25,16 @@ const colors = {
 const recentDiagnoses = [
   {
     id: '1',
-    imageUri: require('../../assets/images/pepper 2.jpg'),
     diseaseName: 'Fom fed Start NRI)',
     confidence: '80%',
   },
   {
     id: '2',
-    imageUri: require('../../assets/images/pepper 2.jpg'),
     diseaseName: 'Prer led Back SOK)',
     confidence: '04%',
   },
   {
     id: '3',
-    imageUri: require('../../assets/images/pepper 2.jpg'),
     diseaseName: 'Pella Donsoce',
     confidence: '92%',
   },
@@ -126,50 +122,21 @@ export default function UploadScreen() {
           <Text style={styles.galleryText}>Upload from Gallery</Text>
         </TouchableOpacity>
 
-        {/* Three Placeholders */}
-        <View style={styles.placeholdersContainer}>
-          <View style={styles.placeholder} />
-          <View style={styles.placeholder} />
-          <View style={styles.placeholder} />
-        </View>
-
-        {/* Recent Diagnoses Section */}
+        {/* Recent Diagnoses Section - Centered */}
         <View style={styles.recentSection}>
-          <Text style={styles.recentTitle}>Recent Diagnosies</Text>
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            style={styles.diagnosesScroll}
-          >
+          <Text style={styles.recentTitle}>Recent Diagnoses</Text>
+          <View style={styles.diagnosesContainer}>
             {recentDiagnoses.map((diagnosis) => (
-              <TouchableOpacity 
-                key={diagnosis.id} 
-                style={styles.diagnosisCard}
-                onPress={() => {
-                  // Navigate to result screen with this diagnosis
-                  router.push({
-                    pathname: '/result',
-                    params: {
-                      diseaseName: diagnosis.diseaseName,
-                      confidence: diagnosis.confidence,
-                    },
-                  });
-                }}
-              >
-                <Image 
-                  source={diagnosis.imageUri} 
-                  style={styles.diagnosisImage}
-                  resizeMode="cover"
-                />
+              <View key={diagnosis.id} style={styles.diagnosisCard}>
                 <Text style={styles.diagnosisName} numberOfLines={1}>
                   {diagnosis.diseaseName}
                 </Text>
                 <Text style={styles.diagnosisConfidence}>
                   {diagnosis.confidence}
                 </Text>
-              </TouchableOpacity>
+              </View>
             ))}
-          </ScrollView>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -256,20 +223,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  placeholdersContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 32,
-    paddingHorizontal: 8,
-  },
-  placeholder: {
-    width: 100,
-    height: 80,
-    backgroundColor: colors.darkGray,
-    borderRadius: 8,
-  },
   recentSection: {
     marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   recentTitle: {
     color: colors.white,
@@ -278,39 +235,28 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingLeft: 4,
   },
-  diagnosesScroll: {
-    marginLeft: -4,
+  diagnosesContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   diagnosisCard: {
-    width: 140,
-    marginRight: 12,
     backgroundColor: colors.cardBackground,
     borderRadius: 12,
-    overflow: 'hidden',
+    padding: 16,
+    marginBottom: 12,
+    width: 250,
     elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-  },
-  diagnosisImage: {
-    width: '100%',
-    height: 100,
-    backgroundColor: colors.lightGreen,
   },
   diagnosisName: {
     color: colors.primary,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '500',
-    paddingHorizontal: 8,
-    paddingTop: 8,
     paddingBottom: 4,
   },
   diagnosisConfidence: {
     color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
-    paddingHorizontal: 8,
-    paddingBottom: 8,
   },
 });
