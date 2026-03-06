@@ -1,54 +1,74 @@
-import React from 'react';
+// app/preview.tsx
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet as StyleSheet2,
-  SafeAreaView as SafeAreaView2,
+  StyleSheet,
+  SafeAreaView,
   Image,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
-import { useRouter as useRouter2, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { predictDisease, mapDiseaseName, mapSeverity } from './utils/apiService';
 
-const colors2 = {
-  primary: '#2D5016',
-  background: '#F8F9F5',
-  white: '#FFFFFF',
-  textPrimary: '#333333',
-  lightGray: '#E0E0E0',
-  gray: '#666666',
+const colors = {
+  primary        : '#2D5016',
+  background     : '#F8F9F5',
+  white          : '#FFFFFF',
+  textPrimary    : '#333333',
+  lightGray      : '#E0E0E0',
+  gray           : '#666666',
 };
 
 export default function PreviewScreen() {
-  const router = useRouter2();
-  const { imageUri } = useLocalSearchParams<{ imageUri: string }>();
+  const router                    = useRouter();
+  const { imageUri }              = useLocalSearchParams<{ imageUri: string }>();
   const [analyzing, setAnalyzing] = useState(false);
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
+    if (!imageUri) return;
     setAnalyzing(true);
 
-    // Simulate API call for disease detection
-    setTimeout(() => {
-      setAnalyzing(false);
-      // Limit possible results to Slow wilt, Leaf blight, or Healthy
-      const choices = [
-        { diseaseName: 'Slow wilt', severity: 'Moderate', confidence: '82' },
-        { diseaseName: 'Leaf blight', severity: 'Moderate', confidence: '88' },
-        { diseaseName: 'Healthy', severity: 'None', confidence: '98' },
-      ];
-      // For now pick the highest-confidence mock (or choose deterministically/randomly)
-      const result = choices[Math.floor(Math.random() * choices.length)];
+    try {
+      // ── Call real backend ─────────────────────────────────────────────────
+      const result = await predictDisease(imageUri);
+
+      // ── Image rejected (not a pepper leaf) ───────────────────────────────
+      if (result.rejected) {
+        Alert.alert(
+          '❌ Not a Black Pepper Leaf',
+          result.reject_reason ?? 'Please upload a clear image of a black pepper leaf.',
+          [{ text: 'OK', onPress: () => router.back() }]
+        );
+        return;
+      }
+
+      // ── Accepted — navigate to result screen ──────────────────────────────
       router.push({
         pathname: '/result',
-        params: {
+        params  : {
           imageUri,
-          diseaseName: result.diseaseName,
-          severity: result.severity,
-          confidence: result.confidence,
+          diseaseName: mapDiseaseName(result.predicted_class),
+          severity   : mapSeverity(result.predicted_class, result.confidence),
+          confidence : result.confidence.toString(),
+          description: result.description ?? '',
+          advice     : result.advice ?? '',
+          recordId   : result.id,
         },
       });
-    }, 2000);
+
+    } catch (error: any) {
+      Alert.alert(
+        '⚠️ Connection Error',
+        'Could not connect to the server.\n\nMake sure:\n• Colab is running\n• ngrok is active\n• BASE_URL is updated in apiService.ts',
+        [{ text: 'OK' }]
+      );
+      console.error('Predict error:', error);
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   const handleRetake = () => {
@@ -56,143 +76,111 @@ export default function PreviewScreen() {
   };
 
   return (
-    <SafeAreaView2 style={styles2.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View style={styles2.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles2.backButton}>
-          <Text style={styles2.backText}>←</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Text style={styles.backText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles2.headerTitle}>Preview Image</Text>
+        <Text style={styles.headerTitle}>Preview Image</Text>
       </View>
 
-      <View style={styles2.content}>
+      <View style={styles.content}>
         {/* Image Preview */}
-        <View style={styles2.imageContainer}>
-          <Image source={{ uri: imageUri }} style={styles2.image} resizeMode="cover" />
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" />
         </View>
 
         {/* Action Buttons */}
-        <View style={styles2.buttonContainer}>
+        <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={styles2.retakeButton}
+            style={styles.retakeButton}
             onPress={handleRetake}
             disabled={analyzing}
           >
-            <Text style={styles2.retakeText}>Retake Image</Text>
+            <Text style={styles.retakeText}>Retake Image</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles2.analyzeButton, analyzing && styles2.analyzeButtonDisabled]}
+            style={[styles.analyzeButton, analyzing && styles.analyzeButtonDisabled]}
             onPress={handleAnalyze}
             disabled={analyzing}
           >
             {analyzing ? (
-              <View style={styles2.analyzingContainer}>
-                <ActivityIndicator color={colors2.white} size="small" />
-                <Text style={styles2.analyzeText}> Analyzing...</Text>
+              <View style={styles.analyzingContainer}>
+                <ActivityIndicator color={colors.white} size="small" />
+                <Text style={styles.analyzeText}>  Analyzing...</Text>
               </View>
             ) : (
-              <Text style={styles2.analyzeText}>Analyze Disease</Text>
+              <Text style={styles.analyzeText}>Analyze Disease</Text>
             )}
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView2>
+    </SafeAreaView>
   );
 }
 
-const styles2 = StyleSheet2.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors2.background,
+    backgroundColor: colors.background,
   },
   header: {
-    backgroundColor: colors2.primary,
-    height: 60,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    backgroundColor        : colors.primary,
+    height                 : 60,
+    flexDirection          : 'row',
+    alignItems             : 'center',
+    paddingHorizontal      : 16,
+    elevation              : 4,
+    shadowColor            : '#000',
+    shadowOffset           : { width: 0, height: 2 },
+    shadowOpacity          : 0.2,
+    shadowRadius           : 4,
   },
-  backButton: {
-    marginRight: 16,
-    padding: 4,
-  },
-  backText: {
-    color: colors2.white,
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  headerTitle: {
-    color: colors2.white,
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  content: {
-    flex: 1,
-    padding: 24,
-  },
+  backButton : { marginRight: 16, padding: 4 },
+  backText   : { color: colors.white, fontSize: 24, fontWeight: 'bold' },
+  headerTitle: { color: colors.white, fontSize: 18, fontWeight: '600' },
+  content    : { flex: 1, padding: 24 },
   imageContainer: {
-    flex: 1,
-    backgroundColor: colors2.white,
-    borderRadius: 12,
-    overflow: 'hidden',
-    marginBottom: 24,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    flex             : 1,
+    backgroundColor  : colors.white,
+    borderRadius     : 12,
+    overflow         : 'hidden',
+    marginBottom     : 24,
+    elevation        : 3,
+    shadowColor      : '#000',
+    shadowOffset     : { width: 0, height: 2 },
+    shadowOpacity    : 0.2,
+    shadowRadius     : 4,
   },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    gap: 12,
-  },
+  image     : { width: '100%', height: '100%' },
+  buttonContainer: { flexDirection: 'row', gap: 12 },
   retakeButton: {
-    flex: 1,
-    backgroundColor: colors2.white,
+    flex           : 1,
+    backgroundColor: colors.white,
     paddingVertical: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors2.lightGray,
-    alignItems: 'center',
+    borderRadius   : 8,
+    borderWidth    : 1,
+    borderColor    : colors.lightGray,
+    alignItems     : 'center',
   },
-  retakeText: {
-    color: colors2.textPrimary,
-    fontSize: 15,
-    fontWeight: '600',
-  },
+  retakeText: { color: colors.textPrimary, fontSize: 15, fontWeight: '600' },
   analyzeButton: {
-    flex: 1,
-    backgroundColor: colors2.primary,
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    flex            : 1,
+    backgroundColor : colors.primary,
+    paddingVertical : 16,
+    borderRadius    : 8,
+    alignItems      : 'center',
+    justifyContent  : 'center',
+    elevation       : 3,
+    shadowColor     : '#000',
+    shadowOffset    : { width: 0, height: 2 },
+    shadowOpacity   : 0.2,
+    shadowRadius    : 4,
   },
-  analyzeButtonDisabled: {
-    backgroundColor: colors2.gray,
-  },
-  analyzingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  analyzeText: {
-    color: colors2.white,
-    fontSize: 15,
-    fontWeight: '600',
-  },
+  analyzeButtonDisabled: { backgroundColor: colors.gray },
+  analyzingContainer   : { flexDirection: 'row', alignItems: 'center' },
+  analyzeText          : { color: colors.white, fontSize: 15, fontWeight: '600' },
 });
+
