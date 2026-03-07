@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://tanika-achlamydeous-ruffianly.ngrok-free.dev';
+export const BASE_URL = 'https://hyperexcitable-samir-conductive.ngrok-free.dev';
 
 const HEADERS = {
   'ngrok-skip-browser-warning': 'true',
